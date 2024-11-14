@@ -10,14 +10,23 @@
 -- Sort the result set in ascending order on jobtitle.
 -- humanresources.employee table
 
---Answer
+
+SELECT *
+FROM humanresources.employee
+ORDER BY jobtitle ASC 
+
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
 -- Q2: From the following table person.person write a query in SQL to return all rows and a subset of the columns (firstName, lastName, businessentityid) from the person table in the AdventureWorks database. 
 -- The third column heading is renamed to employee_id. Arranged the output in ascending order by lastname.
 
---Answer
+SELECT
+	firstname,
+	lastname,
+	businessentityid AS employee_id
+FROM person.person
+ORDER BY lastname ASC
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -26,7 +35,15 @@
 
 -- production.product
 
---Answer
+
+SELECT 
+	productid,
+	productnumber,
+	name AS productname
+FROM production.product
+WHERE sellstartdate IS NOT NULL AND productline = 'T'
+ORDER BY productname ASC
+
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +52,13 @@
 
 -- sales.salesorderheader
 
---Answer
+SELECT
+	customerid,
+	SUM(freight) AS totalfreight
+FROM sales.salesorderheader
+GROUP BY customerid
+ORDER BY customerid ASC;
+
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -44,7 +67,31 @@
 
 -- person.businessentityaddress
 
---Answer
+SELECT *
+FROM person.address -- contains city and addressid
+
+SELECT *
+FROM person.businessentityaddress -- contains businessentityid and addressid
+
+
+--Yikes v ugly
+SELECT
+	person.address.city,
+	COUNT(person.businessentityaddress.AddressID) AS number_of_employees
+FROM person.address, person.businessentityaddress
+	WHERE person.businessentityaddress.AddressID = person.address.AddressID
+GROUP BY person.address.city
+ORDER BY person.address.city;
+
+
+--noice
+SELECT
+	a.city,
+	COUNT(b.AddressID) AS number_of_employees
+FROM person.address AS a, person.businessentityaddress as b
+	WHERE b.AddressID = a.AddressID
+GROUP BY a.city
+ORDER BY a.city;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
